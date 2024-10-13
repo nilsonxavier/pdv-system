@@ -1,0 +1,8 @@
+/src
+  /components
+  /pages
+    /Login.js
+    /Dashboard.js
+    /Compra.js
+  App.js
+  index.js
