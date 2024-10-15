@@ -17,7 +17,7 @@ function Dashboard() {
             alt="Compra"
             className="w-full h-40 object-cover rounded-md"
           />
-          <h3 className="text-xl font-bold mt-4 text-center">PDV1</h3>
+          <h3 className="text-xl font-bold mt-4 text-center">PDV12</h3>
         </div>
 
         {/* Outros cards podem ser adicionados aqui para Venda, Estoque, etc. */}
