@@ -5,6 +5,7 @@
 /.pnp
 .pnp.js
 /erp-sucata.git
+/build
 
 # testing
 /coverage
@@ -26,4 +27,5 @@ node_modules
 node_modules
 node_modules/
 erp-sucata.git/
+build/
 
