@@ -4,6 +4,7 @@
 /node_modules
 /.pnp
 .pnp.js
+/erp-sucata.git
 
 # testing
 /coverage
@@ -23,6 +24,6 @@ yarn-debug.log*
 yarn-error.log*
 node_modules
 node_modules
-node_modules
+node_modules/
 erp-sucata.git/
 
