@@ -13,16 +13,18 @@ function Dashboard() {
           onClick={() => navigate('/compra')}
         >
           <img
-            src="https://via.placeholder.com/150" // substitua pela imagem de sua escolha
-            alt="Compra"
+            src="img/logo.svg" // substitua pela imagem de sua escolha
+            alt="PDV"
             className="w-full h-40 object-cover rounded-md"
           />
-          <h3 className="text-xl font-bold mt-4 text-center">PDV123</h3>
+          <h3 className="text-xl font-bold mt-4 text-center">PDV</h3>
         </div>
 
         {/* Outros cards podem ser adicionados aqui para Venda, Estoque, etc. */}
       </div>
     </div>
+    
+    
   );
 }
 export default Dashboard;
