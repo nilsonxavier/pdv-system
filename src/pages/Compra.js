@@ -10,6 +10,8 @@ function Compra() {
     const quantidadeRef = useRef(null);
     const produtoRef = useRef(null);
     const precoRef = useRef(null);
+    const [produtoId, setProdutoId] = useState(null); // Armazenar o ID do produto
+
 
     useEffect(() => {
         quantidadeRef.current.focus();
@@ -75,6 +77,7 @@ function Compra() {
     };
 
     const selecionarProduto = (produto) => {
+        setProdutoId(produto.id);      // Armazena o ID do produto
         setProduto(produto.nome);
         setPreco(produto.preco);
         setProdutosFiltrados([]);
@@ -87,28 +90,55 @@ function Compra() {
         }
     };
 
-    const adicionarProduto = () => {
-        if (quantidade && produto && preco) {
-            const produtoExistente = listaProdutos.find(item => item.produto === produto);
+    // const adicionarProduto = () => {
+    //     if (quantidade && produto && preco) {
+    //         const produtoExistente = listaProdutos.find(item => item.produto === produto);
 
+    //         if (produtoExistente) {
+    //             const listaAtualizada = listaProdutos.map(item =>
+    //                 item.produto === produto
+    //                     ? { ...item, quantidade: parseFloat(item.quantidade) + parseFloat(quantidade) }
+    //                     : item
+    //             );
+    //             setListaProdutos(listaAtualizada);
+    //         } else {
+    //             const novoProduto = { quantidade, produto, preco };
+    //             setListaProdutos([...listaProdutos, novoProduto]);
+    //         }
+
+    //         setQuantidade('');
+    //         setProduto('');
+    //         setPreco('');
+    //         quantidadeRef.current.focus();
+    //     }
+    // };
+
+    const adicionarProduto = () => {
+        if (quantidade && produto && preco && produtoId) {
+            const produtoExistente = listaProdutos.find(item => item.id === produtoId);
+    
             if (produtoExistente) {
                 const listaAtualizada = listaProdutos.map(item =>
-                    item.produto === produto
+                    item.id === produtoId
                         ? { ...item, quantidade: parseFloat(item.quantidade) + parseFloat(quantidade) }
                         : item
                 );
                 setListaProdutos(listaAtualizada);
             } else {
-                const novoProduto = { quantidade, produto, preco };
+                const novoProduto = { id: produtoId, quantidade, produto, preco }; // Inclui o ID do produto
                 setListaProdutos([...listaProdutos, novoProduto]);
             }
-
+    
             setQuantidade('');
             setProduto('');
             setPreco('');
+            setProdutoId(null);  // Limpa o ID do produto após adicionar ao carrinho
             quantidadeRef.current.focus();
+        } else {
+            alert('Preencha todos os campos antes de adicionar ao carrinho.');
         }
     };
+    
 
     const editarProduto = (index, campo, valor) => {
         const listaAtualizada = listaProdutos.map((item, i) =>
@@ -134,11 +164,57 @@ function Compra() {
 
     const { totalKg, totalValor } = calcularTotal();
 
-    const finalizarCompra = () => {
-        alert('Compra finalizada e estoque atualizado');
-        gerarRecibo();
-        setListaProdutos([]);
+    // const finalizarCompra = () => {
+    //     alert('Compra finalizada e estoque atualizado');
+    //     gerarRecibo();
+    //     setListaProdutos([]);
+    // };
+    const finalizarCompra = async () => {
+        if (listaProdutos.length === 0) {
+            alert('Nenhum produto no carrinho.');
+            return;
+        }
+    
+        // Prepara os dados da compra para enviar ao backend
+        const compra = {
+            produtos: listaProdutos.map(item => ({
+                id: item.id,  // Agora o ID do produto está presente
+                quantidade: parseFloat(item.quantidade),
+                preco: parseFloat(item.preco),
+            })),
+            total: totalValor // Total calculado no carrinho
+        };
+    
+        try {
+            // Faz a requisição POST para registrar a compra e atualizar o estoque
+            const response = await fetch('http://back.elitevenda.com.br:3001/api/compras', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(compra),  // Envia os dados da compra como JSON
+            });
+    
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('Erro ao finalizar a compra:', errorData);
+                alert('Erro ao finalizar a compra. Tente novamente.');
+                return;
+            }
+    
+            // Exibe mensagem de sucesso e limpa o carrinho
+            alert('Compra finalizada com sucesso!');
+            gerarRecibo(); // Gera o recibo após a compra
+            setListaProdutos([]); // Limpa o carrinho
+    
+        } catch (error) {
+            console.error('Erro ao se conectar ao servidor:', error);
+            alert('Erro ao se conectar ao servidor.');
+        }
     };
+    
+    
+    
 
     const gerarRecibo = () => {
         const reciboWindow = window.open('', '', 'width=400,height=600');
