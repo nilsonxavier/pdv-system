@@ -25,7 +25,7 @@ function Dashboard() {
         {/* Card Estoque */}
         <div
           className="bg-white p-6 rounded-lg shadow-lg cursor-pointer"
-          onClick={() => navigate('/compra')}
+          onClick={() => navigate('/estoque')}
         >
           <img
             src="img/estoque.ico" // substitua pela imagem de sua escolha
