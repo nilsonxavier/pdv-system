@@ -47,6 +47,19 @@ function Dashboard() {
           />
           <h3 className="text-xl font-bold mt-4 text-center">RELATORIOS</h3>
         </div>
+
+        {/* Card configuracao */}
+        <div
+          className="bg-white p-6 rounded-lg shadow-lg cursor-pointer"
+          onClick={() => navigate('/config-impressora')}
+        >
+          <img
+            src="img/relatorio.svg" // substitua pela imagem de sua escolha
+            alt="relatorio"
+            className="w-full h-40 object-cover rounded-md"
+          />
+          <h3 className="text-xl font-bold mt-4 text-center">CONFIGURAÇÃO</h3>
+        </div>
       </div>
     </div>
     

@@ -213,36 +213,119 @@ function Compra() {
         }
     };
     
-    
-    
-
+    // configuracao recibo recebendo do components/configimpre
     const gerarRecibo = () => {
+        // Recupera as configurações de impressão salvas
+        const configuracoes = JSON.parse(localStorage.getItem('configImpressora')) || {
+          tamanhoFonte: 12, // Valor padrão se não houver configuração
+          estiloFonte: 'Normal',
+          cabecalho: 'SUCATA',
+          rodape: 'Volte Sempre !!!',
+          tamanhoFolha: '58mm' // Valor padrão de 58mm
+        };
+    
+        // Aplica as configurações de tamanho e estilo de fonte, ajustando margens e espaçamentos
+        const style = `
+          <style>
+            body { 
+              font-family: Arial, sans-serif; 
+              font-size: ${configuracoes.tamanhoFonte}px; 
+              font-style: ${configuracoes.estiloFonte.toLowerCase()};
+              margin-left: 0.01mm;
+              margin-right: 0.01mm;
+            }
+            .cabecalho, .rodape { 
+              font-size: ${configuracoes.tamanhoFonte}px; 
+              font-weight: bold; 
+            }
+            .dados-carrinho { 
+              font-size: ${configuracoes.tamanhoFonte - 2}px; 
+              margin-top: 2px; 
+              text-align: left;
+            }
+            .titulo, .item { 
+              display: grid; 
+              align: left;
+              grid-template-columns: 0.6fr 0.4fr 0.6fr 1fr; /* Ajusta a largura das colunas para dar mais espaço à coluna "Total" */
+              gap: 0px; /* Diminui o espaçamento entre as colunas */
+            } 
+            .titulo { 
+              font-weight: bold; 
+              text-align: left; 
+              margin-bottom: 5px; 
+            }
+            .total { 
+              font-weight: bold; 
+            }
+            .recibo { 
+              width: ${configuracoes.tamanhoFolha}; 
+              max-width: 100%; 
+            }
+            @media print {
+              body { 
+                -webkit-print-color-adjust: exact; 
+                margin-left: 0.01mm; 
+                margin-right: 0.01mm;
+              }
+            }
+          </style>
+        `;
+    
+        // Abre uma nova janela para o recibo
         const reciboWindow = window.open('', '', 'width=400,height=600');
-        reciboWindow.document.write('<html><head><title>Recibo</title></head><body>');
-        reciboWindow.document.write('<h2>Recibo de Compra</h2>');
-        reciboWindow.document.write('<table><thead><tr><th>Produto</th><th>Qtd</th><th>Preço Unitário</th><th>Total</th></tr></thead><tbody>');
-      
+    
+        // Inicia o conteúdo HTML do recibo
+        reciboWindow.document.write('<html><head><title>Recibo</title>' + style + '</head><body>');
+        
+        // Adiciona o cabeçalho do recibo
+        reciboWindow.document.write(`<div class="cabecalho"><h2>${configuracoes.cabecalho}</h2></div>`);
+    
+        // Adiciona os títulos das colunas
+        reciboWindow.document.write(`
+          <div class="titulo">
+            <span>Nome</span>
+            <span>Qtd</span>
+            <span>Preço</span>
+            <span>Total</span>
+          </div>
+        `);
+    
+        // Adiciona os dados do carrinho em formato de lista
+        reciboWindow.document.write('<div class="recibo dados-carrinho">');
+        
         listaProdutos.forEach(produto => {
-          reciboWindow.document.write(`
-            <tr>
-              <td>${produto.produto}</td>
-              <td>${produto.quantidade}</td>
-              <td>R$ ${produto.preco}</td>
-              <td>R$ ${(produto.quantidade * produto.preco).toFixed(2)}</td>
-            </tr>
-          `);
+            reciboWindow.document.write(`
+                <div class="item">
+                    <span>${produto.produto}</span>
+                    <span>${produto.quantidade}</span>
+                    <span>R$ ${produto.preco}</span>
+                    <span>R$ ${(produto.quantidade * produto.preco).toFixed(2)}</span>
+                </div>
+            `);
         });
-      
-        reciboWindow.document.write('</tbody></table>');
-        reciboWindow.document.write(`<p>Total de Produtos: ${totalKg.toFixed(2)} kg</p>`);
-        reciboWindow.document.write(`<p>Preço Total: R$ ${totalValor.toFixed(2)}</p>`);
-        reciboWindow.document.write('<p>Obrigado pela compra!</p>');
-        reciboWindow.document.write('</body></html>');
+    
+        // Adiciona o total em kg e valor
+        reciboWindow.document.write(`
+          <div class="total">
+            <p>Total de Produtos: ${totalKg.toFixed(2)} kg</p>
+            <p>Preço Total: R$ ${totalValor.toFixed(2)}</p>
+          </div>
+        `);
+    
+        // Adiciona o rodapé do recibo
+        reciboWindow.document.write(`<div class="rodape"><p>${configuracoes.rodape}</p></div>`);
+    
+        // Finaliza o conteúdo HTML
+        reciboWindow.document.write('</div></body></html>');
+    
+        // Ajusta a altura da janela para garantir que todo o conteúdo seja exibido
         reciboWindow.document.close();
+        reciboWindow.focus(); // Garante que a janela de impressão seja focada
+    
+        // Garante que o recibo seja impresso por completo
         reciboWindow.print();
-      };
-      
-
+        reciboWindow.onafterprint = reciboWindow.close; // Fecha a janela após a impressão
+    };
 
     return (
         <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
