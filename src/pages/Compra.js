@@ -164,11 +164,7 @@ function Compra() {
 
     const { totalKg, totalValor } = calcularTotal();
 
-    // const finalizarCompra = () => {
-    //     alert('Compra finalizada e estoque atualizado');
-    //     gerarRecibo();
-    //     setListaProdutos([]);
-    // };
+
     const finalizarCompra = async () => {
         if (listaProdutos.length === 0) {
             alert('Nenhum produto no carrinho.');
