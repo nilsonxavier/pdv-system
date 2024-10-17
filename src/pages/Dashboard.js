@@ -21,6 +21,32 @@ function Dashboard() {
         </div>
 
         {/* Outros cards podem ser adicionados aqui para Venda, Estoque, etc. */}
+
+        {/* Card Estoque */}
+        <div
+          className="bg-white p-6 rounded-lg shadow-lg cursor-pointer"
+          onClick={() => navigate('/compra')}
+        >
+          <img
+            src="img/estoque.ico" // substitua pela imagem de sua escolha
+            alt="estoque"
+            className="w-full h-40 object-cover rounded-md"
+          />
+          <h3 className="text-xl font-bold mt-4 text-center">ESTOQUE</h3>
+        </div>
+
+        {/* Card Relatorio */}
+        <div
+          className="bg-white p-6 rounded-lg shadow-lg cursor-pointer"
+          onClick={() => navigate('/compra')}
+        >
+          <img
+            src="img/relatorio.svg" // substitua pela imagem de sua escolha
+            alt="relatorio"
+            className="w-full h-40 object-cover rounded-md"
+          />
+          <h3 className="text-xl font-bold mt-4 text-center">RELATORIOS</h3>
+        </div>
       </div>
     </div>
     
